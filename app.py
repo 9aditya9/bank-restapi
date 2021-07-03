@@ -45,10 +45,12 @@ def autocomplete():
 	if not offset:
 		offset = 0
 	if not limit:
-		limit = None
-	
-	if not q:
+		result = db.session.execute("SELECT * FROM bank_branches WHERE (branch LIKE :q) ORDER BY ifsc ASC OFFSET (:offset)", {"q": q + "%", "offset": int(offset)}).fetchall()
+		return jsonify({"result": [dict(row) for row in result]})
+	elif not q:
 		q = 'A'
+		result = db.session.execute("SELECT * FROM bank_branches WHERE (branch LIKE :q) ORDER BY ifsc ASC LIMIT (:limit) OFFSET (:offset)", {"q": q + "%", "limit": int(limit), "offset": int(offset)}).fetchall()
+		return jsonify({"result": [dict(row) for row in result]})
 	result = db.session.execute("SELECT * FROM bank_branches WHERE (branch LIKE :q) ORDER BY ifsc ASC LIMIT (:limit) OFFSET (:offset)", {"q": q + "%", "limit": int(limit), "offset": int(offset)}).fetchall()
 	return jsonify({"result": [dict(row) for row in result]})
 
