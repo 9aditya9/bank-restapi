@@ -44,8 +44,6 @@ def autocomplete():
 	offset = request.args.get('offset')
 	if not offset:
 		offset = 0
-	if not limit:
-		limit = 0
 	if not q:
 		q = 'A'
 	result = db.session.execute("SELECT * FROM bank_branches WHERE (branch LIKE :q) ORDER BY ifsc ASC LIMIT (:limit) OFFSET (:offset)", {"q": q + "%", "limit": int(limit), "offset": int(offset)}).fetchall()
@@ -59,7 +57,7 @@ def searchapi():
 	if not offset:
 		offset = 0
 	if not limit:
-		limit = 0
+		limit = 5
 	if not q:
 		q = 'A'
 	result = db.session.execute("SELECT * FROM bank_branches WHERE (branch LIKE :q) OR (address LIKE :q) OR (city LIKE :q) OR (district LIKE :q) OR (state LIKE :q) ORDER BY ifsc ASC LIMIT (:limit) OFFSET (:offset)", {"q": q + "%", "limit": int(limit), "offset": int(offset)}).fetchall()
